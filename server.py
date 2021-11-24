@@ -132,19 +132,19 @@ def handle(client):
             args = message.split(" ")
             name = users[args[0]]
             nick = args[0]
-            if '<help>' in message:
+            if '$help' in message:
                 name.send(instructions.encode('ascii'))
-            elif '<list>' in message:
+            elif '$list' in message:
                 list_all_roomdetails(args[0])
-            elif '<join>' in message:
+            elif '$join' in message:
                 join_room(args[0], ' '.join(args[2:]))
-            elif '<leave>' in message:
+            elif '$leave' in message:
                 leave_room(args[0])
-            elif '<switch>' in message:
+            elif '$switch' in message:
                 switch_room(args[0], args[2])
-            elif '<personal>' in message:
+            elif '$personal' in message:
                 personalMessage(message)
-            elif '<quit>' in message:
+            elif '$quit' in message:
                 remove_client(args[0])
                 name.send('QUIT'.encode('ascii'))
                 name.close()
