@@ -26,7 +26,7 @@ def list_all_roomdetails(nickname):
     name = users[nickname]
     print(len(roomdetails))
     if len(roomdetails) == 0:
-        name.send('No roomdetails are available to join'.encode('ascii'))
+        name.send('No roomdetails are available to join'.encode('utf-8'))
     else:
         reply = "List of available roomdetails: \n"
         for room in roomdetails:
@@ -37,7 +37,7 @@ def list_all_roomdetails(nickname):
             #if nickname not in roomdetails[room].nicknames:
             for people in roomdetails[room].nicknames:
                 reply += people + '\n'
-        name.send(f'{reply}'.encode('ascii'))
+        name.send(f'{reply}'.encode('utf-8'))
 
 
 #now to join to other rooms
@@ -52,18 +52,18 @@ def join_room(nickname, room_name):
 
         user.thisRoom = room_name
         user.roomdetails.append(room)
-        name.send(f'{room_name} created'.encode('ascii'))
+        name.send(f'{room_name} created'.encode('utf-8'))
     else:
         room = roomdetails[room_name]
         if room_name in user.roomdetails:
-            name.send('You are already in the room'.encode('ascii'))
+            name.send('You are already in the room'.encode('utf-8'))
         else:
             room.peoples.append(name)
             room.nicknames.append(nickname)
             user.thisRoom = room_name
             user.roomdetails.append(room)
             broadcast(f'{nickname} joined the room', room_name)
-            #name.send('Joined room'.encode('ascii'))
+            #name.send('Joined room'.encode('utf-8'))
 
 #now to switch to other room
 def switch_room(nickname, roomname):
@@ -71,19 +71,19 @@ def switch_room(nickname, roomname):
     name = users[nickname]
     room = roomdetails[roomname]
     if roomname == user.thisRoom:
-        name.send('You are already in the room'.encode('ascii'))
+        name.send('You are already in the room'.encode('utf-8'))
     elif room not in user.roomdetails:
-        name.send('Switch not available, You are not part of the room'.encode('ascii'))
+        name.send('Switch not available, You are not part of the room'.encode('utf-8'))
     else:
         user.thisRoom = roomname
-        name.send(f'Switched to {roomname}'.encode('ascii'))
+        name.send(f'Switched to {roomname}'.encode('utf-8'))
 
 #now to exit the room
 def leave_room(nickname):
     user = users_in_room[nickname]
     name = users[nickname]
     if user.thisRoom == '':
-        name.send('You are not part of any room'.encode('ascii'))
+        name.send('You are not part of any room'.encode('utf-8'))
     else:
         roomname = user.thisRoom
         room = roomdetails[roomname]
@@ -92,7 +92,7 @@ def leave_room(nickname):
         roomdetails[roomname].peoples.remove(name)
         roomdetails[roomname].nicknames.remove(nickname)
         broadcast(f'{nickname} left the room', roomname)
-        name.send('You left the room'.encode('ascii'))
+        name.send('You left the room'.encode('utf-8'))
 
 
 #now to personally message
@@ -101,12 +101,12 @@ def personalMessage(message):
     user = args[2]
     sender = users[args[0]]
     if user not in users:
-        sender.send('User not found'.encode('ascii'))
+        sender.send('User not found'.encode('utf-8'))
     else:
         reciever = users[user]
         msg = ' '.join(args[3:])
-        reciever.send(f'[personal message] {args[0]}: {msg}'.encode('ascii'))
-        sender.send(f'[personal message] {args[0]}: {msg}'.encode('ascii'))
+        reciever.send(f'[personal message] {args[0]}: {msg}'.encode('utf-8'))
+        sender.send(f'[personal message] {args[0]}: {msg}'.encode('utf-8'))
 
 #now to exit the server
 def remove_client(nickname):
@@ -128,12 +128,12 @@ def handle(client):
     nick=''
     while True:
         try:
-            message = client.recv(1024).decode('ascii')
+            message = client.recv(1024).decode('utf-8')
             args = message.split(" ")
             name = users[args[0]]
             nick = args[0]
             if '$help' in message:
-                name.send(instructions.encode('ascii'))
+                name.send(instructions.encode('utf-8'))
             elif '$list' in message:
                 list_all_roomdetails(args[0])
             elif '$join' in message:
@@ -146,11 +146,11 @@ def handle(client):
                 personalMessage(message)
             elif '$quit' in message:
                 remove_client(args[0])
-                name.send('QUIT'.encode('ascii'))
+                name.send('QUIT'.encode('utf-8'))
                 name.close()
             else:
                 if users_in_room[args[0]].thisRoom == '':
-                    name.send('You are not part of any room'.encode('ascii'))
+                    name.send('You are not part of any room'.encode('utf-8'))
                 else:
                     msg = ' '.join(args[1:])
                     broadcast(f'{args[0]}: {msg}',users_in_room[args[0]].thisRoom)
@@ -177,7 +177,7 @@ def handle(client):
             if nick in nicknames:
                 nicknames.remove(nick)
 
-            #broadcast(f'{nickname} left the room'.encode('ascii'))
+            #broadcast(f'{nickname} left the room'.encode('utf-8'))
 
             break
 
@@ -187,19 +187,20 @@ def recieve():
         client, address = server.accept()
         print(f'connected with {str(address)}')
         print(client)
-        client.send('NICK'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
+        client.send('NICK'.encode('utf-8'))
+        nickname = client.recv(1024).decode('utf-8')
         nicknames.append(nickname)
         clients.append(client)
         user = User(nickname)
         users_in_room[nickname] = user
         users[nickname] = client
         print(f'Nickname of the client is {nickname}')
-        #broadcast(f'{nickname} joined the chat'.encode('ascii'))
-        client.send('Connected to the server!'.encode('ascii'))
-        client.send(instructions.encode('ascii'))
+        #broadcast(f'{nickname} joined the chat'.encode('utf-8'))
+        client.send('Connected to the server!'.encode('utf-8'))
+        client.send(instructions.encode('utf-8'))
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
 
 print('Server is listening...')
 recieve()
+
