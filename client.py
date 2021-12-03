@@ -16,9 +16,9 @@ client.connect(('127.0.0.1', 55555))
 def receive():
     while True:
         try:
-            message = client.recv(1024).decode('ascii')
+            message = client.recv(1024).decode('utf-8')
             if message == 'NICK':
-                client.send(nickname.encode('ascii'))
+                client.send(nickname.encode('utf-8'))
             elif message == 'QUIT':
                 sys.exit(2)
             else:
@@ -32,7 +32,7 @@ def write():
     while True:
         message = '{} {}'.format(nickname, input(''))
         try:
-            client.send(message.encode('ascii'))
+            client.send(message.encode('utf-8'))
         except:
             sys.exit(0)
 
