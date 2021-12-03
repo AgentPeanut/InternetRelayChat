@@ -12,6 +12,7 @@ port = 55555  #do not use 0 to 40000, as they are reserved
 
 #starting the server
 #AF_INET is for the type of addresses that makes connection (Internet) and SOCK_STREAM is for tcp connections
+#AF_INET is for the type of addresses that makes connection (Internet) and SOCK_STREAM is for tcp connections
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port)) #server is binding
 server.listen() #now its in listening mode
@@ -37,4 +38,5 @@ users_in_room = {}
 def broadcast(message, roomname):
     for client in roomdetails[roomname].peoples:
         msg = '['+roomname+'] '+message
-        client.send(msg.encode('ascii'))
+        client.send(msg.encode('utf-8'))
+
